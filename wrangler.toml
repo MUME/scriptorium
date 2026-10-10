@@ -1,0 +1,32 @@
+# Scriptorium — MUME help-file audit, proposal and approval system.
+# Cloudflare Worker + D1, on the White Council account (themumewhitecouncil@gmail.com).
+
+name = "scriptorium"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+# Bundle the single-page frontend as a string.
+rules = [
+  { type = "Text", globs = ["**/*.html"], fallthrough = true }
+]
+
+[vars]
+PUBLIC_BASE_URL = "https://scriptorium.mume-idea-submission.workers.dev"
+# Reuses the "Idea Board" Discord app + MUME guild + White Council role.
+DISCORD_APP_ID = "1526294757733695619"
+DISCORD_GUILD_ID = "497457567392333824"
+COUNCIL_ROLE_ID = "1538661236852391976"
+APPROVER_IDS = "261725626594099210,733082288291577926"  # Jahara, Imago (jwpilling)
+TEST_APPROVER_IDS = "728378731357536337"  # thejumbles (Khófur) — reversible test reviewer
+OWNER_ID = "777979829067841600"  # Relim — only account that can read the login log
+
+[[d1_databases]]
+binding = "DB"
+database_name = "scriptorium"
+database_id = "2f76cfee-603f-4376-8e99-2732d87c7b96"
+migrations_dir = "migrations"
+
+# KV for signed sessions + config (added when auth is wired).
+# [[kv_namespaces]]
+# binding = "CONFIG"
+# id = "..."

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scriptorium — MUME help file review</title>
+<style>
+:root{
+  --ink-1:#18181b;--ink-2:#3f3f46;--ink-3:#71717a;--ink-4:#a1a1aa;
+  --bg-1:#fff;--bg-2:#fafafa;--bg-3:#f4f4f5;--line:#e4e4e7;--line-2:#d4d4d8;
+  --accent:#0E7490;--accent-soft:#ecfeff;--accent-line:#a5f3fc;
+  --was:#7f1d1d;--was-bg:#fef2f2;--now:#14532d;--now-bg:#f0fdf4;--warn:#92400e;--warn-bg:#fffbeb;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;
+}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font-family:var(--sans);color:var(--ink-1);background:var(--bg-2);font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.mast{background:var(--bg-1);border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.mast h1{margin:0;font-size:15px;font-weight:600;letter-spacing:-.01em}
+.mast .sub{font-size:12.5px;color:var(--ink-3)}
+.mast .spacer{flex:1}
+.tabs{display:flex;gap:2px}
+.tab{padding:6px 13px;font-size:13px;color:var(--ink-2);border:1px solid transparent;border-radius:3px;cursor:pointer;background:none}
+.tab.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent-line)}
+.who{font-size:12.5px;color:var(--ink-3)}
+.who b{color:var(--ink-1)}
+.tbadge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.04em;color:#92400e;background:var(--warn-bg);border:1px solid #fde68a;border-radius:2px;padding:1px 6px}
+.signin{padding:6px 13px;background:#5865F2;color:#fff;border:0;border-radius:3px;font-size:12.5px;cursor:pointer;font-family:var(--sans)}
+.lnk{color:var(--accent);cursor:pointer;text-decoration:underline;font-size:12.5px;background:none;border:0;font-family:var(--sans)}
+.shell{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 51px)}
+@media(max-width:860px){.shell{grid-template-columns:1fr;height:auto}.list{max-height:44vh;border-right:0;border-bottom:1px solid var(--line)}}
+.list{background:var(--bg-1);border-right:1px solid var(--line);overflow-y:auto}
+.search{padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg-1);z-index:2}
+.search input{width:100%;padding:8px 11px;border:1px solid var(--line-2);border-radius:3px;font-size:13px;font-family:var(--sans)}
+.search .count{font-size:11px;color:var(--ink-3);margin-top:6px;font-family:var(--mono)}
+.item{padding:11px 16px;border-bottom:1px solid var(--line);cursor:pointer;border-left:3px solid transparent}
+.item:hover{background:var(--bg-2)}
+.item.on{background:var(--accent-soft);border-left-color:var(--accent)}
+.item .t{font-weight:550;font-size:13px;letter-spacing:-.005em}
+.item .m{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-top:2px;display:flex;gap:8px;align-items:center}
+.pill{font-family:var(--mono);font-size:10px;padding:1px 5px;border-radius:2px;border:1px solid var(--line-2);color:var(--ink-3)}
+.pill.fx{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.pill.op{color:var(--warn);border-color:#fde68a;background:var(--warn-bg)}
+.pill.s-approved{color:var(--now);border-color:#bbf7d0;background:var(--now-bg)}
+.pill.s-declined{color:var(--was);border-color:#fecaca;background:var(--was-bg)}
+.pill.s-held{color:var(--warn);border-color:#fde68a;background:var(--warn-bg)}
+.pill.s-submitted{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+.pill.s-applied{color:var(--ink-2);border-color:var(--line-2);background:var(--bg-3)}
+.pill.s-superseded{color:var(--ink-3);border-color:var(--line-2)}
+.pill.q{color:var(--now);border-color:#bbf7d0;background:var(--now-bg)}
+.item.locked{opacity:.5}
+.item.locked .t{color:var(--ink-2)}
+.lock{border:1px solid #bbf7d0;background:var(--now-bg);border-radius:6px;padding:11px 14px;margin:14px 0;font-size:13px;color:var(--ink-1)}
+.lock.rev{border-color:#fde68a;background:var(--warn-bg)}
+.lock b{font-weight:650}
+.stamps{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.stamps b{color:var(--ink-2);font-weight:600}
+.item .rjn{font-size:12px;color:var(--was);margin-top:4px;font-style:italic;line-height:1.35}
+.item .rjn.muted{color:var(--ink-3)}
+.qgroup{padding:13px 16px 7px;background:var(--bg-3);border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);font-weight:700}
+.detail{overflow-y:auto;padding:26px 34px 80px}
+.detail-inner{max-width:1160px}
+/* Two-pane layouts (edit + review): work/proposed on the left, original reference on the right. */
+.split2{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;margin-bottom:24px}
+@media(max-width:1000px){.split2{grid-template-columns:1fr}}
+.refpane{position:sticky;top:14px;max-height:calc(100vh - 130px);overflow:auto}
+.paneh{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.paneh.prop{color:var(--accent)}
+.paneh.orig{color:var(--ink-4)}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px}
+h2.title{margin:0 0 4px;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.slug{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-bottom:20px}
+.sec{margin:0 0 24px}
+.sec>h3{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-4);font-weight:600;margin:0 0 9px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+pre.body{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;color:var(--ink-1);background:var(--bg-1);border:1px solid var(--line);padding:14px;max-width:900px}
+.links{display:flex;flex-wrap:wrap;gap:6px}
+.links a{font-family:var(--mono);font-size:11.5px;color:var(--accent);background:var(--accent-soft);border:1px solid var(--accent-line);padding:2px 8px;border-radius:2px;text-decoration:none;cursor:pointer}
+.btn{padding:8px 16px;border:1px solid var(--line-2);background:var(--bg-1);color:var(--ink-1);font-weight:550;font-size:13px;border-radius:2px;cursor:pointer;font-family:var(--sans)}
+.btn:hover{background:var(--bg-3)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{background:#0c637b}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--ink-2);margin-bottom:5px}
+.field textarea,.field select,.field input{width:100%;font-family:var(--mono);font-size:12.5px;padding:9px 11px;border:1px solid var(--line-2);border-radius:3px;line-height:1.6}
+.field textarea{min-height:340px;white-space:pre;overflow-wrap:normal;overflow-x:auto}
+.field .rat{font-family:var(--sans);min-height:auto;height:64px}
+.field select{font-family:var(--sans)}
+.checks{border:1px solid var(--line);background:var(--bg-1)}
+.chk{display:flex;gap:11px;padding:9px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:flex-start}
+.chk:last-child{border-bottom:0}
+.chk .ic{font-family:var(--mono);font-weight:700;font-size:12px;width:15px;flex:none}
+.chk.ok .ic{color:var(--now)}.chk.no .ic,.chk.error .ic{color:var(--was)}.chk.wa .ic,.chk.warn .ic{color:var(--warn)}
+.chk b{color:var(--ink-1)}
+.diff{border:1px solid var(--line);font-family:var(--mono);font-size:12.5px;line-height:1.7;background:var(--bg-1);overflow-x:auto}
+.dl{display:flex;padding:0 0}
+.dl .g{flex:none;width:22px;text-align:center;color:var(--ink-4);user-select:none;font-weight:600}
+.dl .t{white-space:pre-wrap;padding-right:14px}
+.dl.was{background:var(--was-bg)}.dl.was .g,.dl.was .t{color:var(--was)}
+.dl.now{background:var(--now-bg)}.dl.now .g,.dl.now .t{color:var(--now)}
+.dl.ctx .t{color:var(--ink-3)}
+.clean{border:1px solid var(--line-2);background:var(--bg-1)}
+.clean .ch{display:flex;align-items:center;gap:10px;padding:8px 13px;border-bottom:1px solid var(--line);background:var(--bg-3)}
+.clean .ch .lbl{font-family:var(--mono);font-size:11px;color:var(--ink-3);flex:1}
+.clean pre{margin:0;padding:14px;font-family:var(--mono);font-size:12.5px;line-height:1.7;white-space:pre-wrap;color:var(--ink-1)}
+.copy{border:1px solid var(--line-2);background:var(--bg-1);color:var(--ink-2);padding:4px 11px;border-radius:2px;cursor:pointer;font-family:var(--sans);font-size:12px}
+.copy:hover{border-color:var(--accent);color:var(--accent)}
+.note{border-left:2px solid var(--accent);padding-left:11px;font-size:13px;color:var(--ink-2);margin:0 0 8px}
+.rev-note{border-left:2px solid var(--warn);padding-left:11px;font-size:12.5px;color:var(--warn);margin-top:10px}
+.decide{position:sticky;bottom:0;background:var(--bg-1);border-top:1px solid var(--line);margin:30px -34px -80px;padding:14px 34px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.decide .who2{flex:1;font-size:12px;color:var(--ink-3);min-width:160px}
+.empty{color:var(--ink-3);padding:60px 20px;text-align:center}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink-1);color:#fff;padding:9px 16px;border-radius:4px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.stand{color:var(--ink-2);font-size:14.5px;margin:0 0 20px;max-width:66ch}
+.cite{font-family:var(--mono);font-size:11.5px;color:var(--accent);background:var(--accent-soft);border-left:2px solid var(--accent);padding:7px 11px;margin:0 0 20px;display:inline-block}
+.src mark{background:#fef08a;color:var(--ink-1);padding:0 3px;font-weight:600}
+.recon{display:grid;grid-template-columns:1fr 30px 1fr;align-items:stretch}
+@media(max-width:760px){.recon{grid-template-columns:1fr;gap:10px}.recon .vs{display:none}}
+.src{background:var(--bg-1);border:1px solid var(--line);padding:12px 14px}
+.src .sn{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px dashed var(--line-2)}
+.src pre{margin:0;font-family:var(--mono);font-size:12.5px;line-height:1.65;white-space:pre-wrap;color:var(--ink-2)}
+.vs{display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--ink-4);font-weight:600}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="mast">
+  <h1>Scriptorium</h1>
+  <span class="sub">MUME help file review &amp; approval</span>
+  <div class="tabs">
+    <button class="tab" id="tab-conflicts" onclick="setMode('conflicts')">Conflicts</button>
+    <button class="tab" id="tab-browse" onclick="setMode('browse')">Browse &amp; propose</button>
+    <button class="tab" id="tab-review" onclick="setMode('review')">Review queue</button>
+    <button class="tab" id="tab-rejected" onclick="setMode('rejected')">Rejected</button>
+  </div>
+  <span class="spacer"></span>
+  <span id="auth"></span>
+</div>
+<div class="shell">
+  <div class="list" id="list"></div>
+  <div class="detail"><div class="detail-inner" id="detail"><div class="empty">Loading…</div></div></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const S = { mode:'conflicts', me:null, articles:[], curSlug:null, proposals:[], curProp:null, q:'', proposing:false, conflicts:[], curConflict:null };
+const CATS = {
+  conflict:{name:'Contradictions', blurb:'Two places state different things — decide which source wins.'},
+  stale:{name:'Announced but not propagated', blurb:'A change was announced and the file never caught up.'},
+  quality:{name:'Below standard / broken', blurb:'Not wrong exactly, but a broken reference or thinner than house style.'}
+};
+const $ = id => document.getElementById(id);
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const api = (p,o) => fetch(p,o).then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||r.status);return j});
+function toast(t){const el=$('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
+
+async function boot(){
+  try{const m=await api('/api/me');S.me=m.session;S.configured=m.configured;S.owner=m.owner}catch{}
+  renderAuth();
+  setMode('conflicts');
+}
+function renderAuth(){
+  const a=$('auth');
+  if(S.me){
+    const role=S.me.test?' · <span class="tbadge">TEST reviewer</span>':S.me.approver?' · approver':S.me.council?' · council':'';
+    // Owner (Relim) or a real approver can undo everything test reviewers did.
+    const canReset=S.owner||(S.me.approver&&!S.me.test);
+    a.innerHTML=`<span class="who">Signed in as <b>${esc(S.me.name)}</b>${role}</span> &nbsp;
+      ${canReset?`<button class="lnk" onclick="resetTest()">Undo test activity</button> &nbsp;`:''}
+      <button class="lnk" onclick="location='/auth/logout'">Sign out</button>`;
+  }
+  else{a.innerHTML=`<button class="signin" onclick="location='/auth/login'">Sign in with Discord</button>`}
+}
+async function resetTest(){
+  if(!confirm('Undo ALL test-reviewer activity?\n\nThis reverts every approve/decline/reject/apply a TEST reviewer made (proposals go back to their real state, rejected conflicts return to the list). Real reviewers’ decisions are untouched.'))return;
+  try{const r=await api('/api/admin/reset-test',{method:'POST'});
+    toast(`Undone: ${r.decisions} decision(s), ${r.conflicts} conflict(s) restored`);
+    setMode(S.mode);
+  }catch(e){toast(e.message)}
+}
+function setMode(m){S.mode=m;
+  for(const t of ['conflicts','browse','review','rejected'])$('tab-'+t).className='tab'+(m===t?' on':'');
+  if(m==='conflicts')loadConflicts();else if(m==='browse')loadArticles();else if(m==='rejected')loadRejected();else loadProposals();}
+
+// ---------- conflicts (Area 1) ----------
+async function loadConflicts(){
+  const d=await api('/api/conflicts');S.conflicts=d.conflicts;drawConflictList();
+  if(!S.curConflict)$('detail').innerHTML='<div class="empty">Detected issues in the help files. Select one to review it.</div>';
+}
+function drawConflictList(){
+  const el=$('list');const order=['conflict','stale','quality'];
+  let html=`<div class="search"><input placeholder="—" disabled style="opacity:.4"><div class="count">${S.conflicts.length} open issues</div></div>`;
+  for(const cat of order){const mine=S.conflicts.filter(c=>c.category===cat);if(!mine.length)continue;
+    html+=`<div class="qgroup">${CATS[cat].name} · ${mine.length}</div>`+mine.map(c=>`<div class="item ${c.id===S.curConflict?'on':''}" onclick="openConflict(${c.id})">
+      <div class="t">${esc(c.title)}</div><div class="m"><span>${c.slug}</span> · <span>${esc(c.kicker||'')}</span></div></div>`).join('');
+  }
+  el.innerHTML=html+(S.conflicts.length?'':'<div class="empty">No open issues.</div>');
+}
+function openConflict(id){
+  S.curConflict=id;drawConflictList();
+  const c=S.conflicts.find(x=>x.id===id);if(!c)return;
+  const checks=(c.checks||[]).map(k=>{const ic=k.severity==='ok'?'✓':k.severity==='error'?'✕':'!';return `<div class="chk ${k.severity}"><span class="ic">${ic}</span><span><b>${esc(k.label)}</b> — ${esc(k.detail)}</span></div>`}).join('');
+  const canPropose=S.me&&S.me.council;
+  const diff=(c.diff&&c.diff.length)?`<div class="sec"><h3>Proposed change</h3><div class="diff">${c.diff.map(([k,g,t])=>`<div class="dl ${k}"><span class="g">${g}</span><span class="t">${esc(t)||' '}</span></div>`).join('')}</div></div>`:'';
+  const clean=c.suggested?`<div class="sec"><h3>Clean version, ready to apply</h3><div class="clean"><div class="ch"><span class="lbl">${esc(c.suggested_label||('help/'+c.slug))}</span><button class="copy" onclick="cp(this)">Copy</button></div><pre id="clean">${esc(c.suggested)}</pre></div></div>`:'';
+  $('detail').innerHTML=`
+    <div class="kicker">${esc(c.kicker||CATS[c.category].name)}</div>
+    <h2 class="title">${esc(c.title)}</h2>
+    <div class="slug">help/${c.slug}</div>
+    ${c.cite?`<div class="cite">${esc(c.cite)}</div>`:''}
+    <p class="stand">${esc(c.standing)}</p>
+    <div class="sec"><h3>The conflict</h3>
+      <div class="recon">
+        <div class="src"><div class="sn">${esc(c.src_a_name)}</div><pre>${c.src_a_body}</pre></div>
+        <div class="vs">vs</div>
+        <div class="src"><div class="sn">${esc(c.src_b_name)}</div><pre>${c.src_b_body}</pre></div>
+      </div>
+      ${c.note?`<div class="note" style="margin-top:12px">${esc(c.note)}</div>`:''}</div>
+    <div class="sec"><h3>Automated checks</h3><div class="checks">${checks||'<div class="chk ok"><span class="ic">·</span><span>No checks</span></div>'}</div></div>
+    ${diff}
+    ${clean}
+    <div class="sec"><button class="btn pri" onclick="proposeFromConflict(${id})" ${canPropose?'':'disabled'}>Propose a fix</button>
+      <button class="btn" onclick="rejectConflict(${id})" ${canPropose?'':'disabled'} style="margin-left:8px">Not a conflict — reject</button>
+      ${canPropose?'':'<span class="who" style="margin-left:10px">Sign in as White Council to act on this.</span>'}</div>`;
+}
+// Reject a detected conflict as wrong, with a reason. The reason is written to the
+// conflict_feedback knowledge base so detection can learn where it flags falsely.
+async function rejectConflict(id){
+  const reason=prompt('Why is this not a real conflict?\n\nThis is saved to our knowledge base so the detector learns where it gets conflicts wrong.');
+  if(reason===null)return; // cancelled
+  if(!reason.trim()){toast('A reason is required to reject');return}
+  try{
+    await api('/api/conflicts/'+id+'/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reason:reason.trim()})});
+    toast('Rejected — noted for learning');
+    S.curConflict=null;await loadConflicts();
+  }catch(e){toast(e.message)}
+}
+async function proposeFromConflict(id){
+  const c=S.conflicts.find(x=>x.id===id);if(!c)return;
+  S.mode='browse';for(const t of ['conflicts','browse','review'])$('tab-'+t).className='tab'+(t==='browse'?' on':'');
+  await openArticle(c.slug);startPropose();
+  const rat=$('rat');if(rat)rat.value=c.standing;
+}
+
+// ---------- browse ----------
+async function loadArticles(){
+  const d=await api('/api/articles?q='+encodeURIComponent(S.q));
+  S.articles=d.articles;S.total=d.total;drawList();
+  if(!S.curSlug&&S.mode==='browse')$('detail').innerHTML='<div class="empty">Select a help file to view it, or search above.</div>';
+}
+function drawList(){
+  const el=$('list');
+  const rows=S.articles.map(a=>`<div class="item ${a.slug===S.curSlug?'on':''} ${a.queued?'locked':''}" onclick="openArticle('${a.slug}')">
+    <div class="t">${esc(a.title)}</div>
+    <div class="m"><span>${a.slug}</span>${a.has_fields?'<span class="pill fx">fields</span>':''}${a.queued?'<span class="pill q">in queue</span>':a.open?`<span class="pill op">${a.open} open</span>`:''}</div></div>`).join('');
+  el.innerHTML=`<div class="search"><input id="q" placeholder="Search all ${S.total} help files…" value="${esc(S.q)}" oninput="onSearch(this.value)"><div class="count">${S.articles.length} shown</div></div>${rows||'<div class="empty">No matches.</div>'}`;
+}
+let searchT;function onSearch(v){S.q=v;clearTimeout(searchT);searchT=setTimeout(loadArticles,180)}
+async function openArticle(slug){
+  S.curSlug=slug;S.proposing=false;drawList();
+  const d=await api('/api/articles/'+slug);const a=d.article;
+  const st=d.state||{};
+  const links=a.links.length?`<div class="sec"><h3>See also / references</h3><div class="links">${a.links.map(l=>`<a onclick="openArticle('${l}')">${l}</a>`).join('')}</div></div>`:'';
+  const canPropose=S.me&&S.me.council&&!st.queued;
+  let banner='';
+  if(st.queued){
+    banner=`<div class="lock"><b>Currently in queue for update.</b> An approved edit is waiting to go live in-game — this file is locked and can't be edited until the change is applied. ${stamps(d.timestamps)}</div>`;
+  }else if(st.inReview){
+    banner=`<div class="lock rev"><b>This file is in review.</b> There's already a proposal awaiting a decision. Any edit you make will be merged into it, so there's one version for the approver. ${stamps(d.timestamps)}</div>`;
+  }
+  $('detail').innerHTML=`
+    <div class="kicker">help/${a.slug}</div>
+    <h2 class="title">${esc(a.title)}</h2>
+    <div class="slug">${a.aliases.length?'aliases: '+a.aliases.join(', '):'&nbsp;'}</div>
+    ${banner}
+    <div class="sec"><h3>Current help text</h3><pre class="body">${esc(a.body)}</pre></div>
+    ${links}
+    <div class="sec"><button class="btn pri" onclick="startPropose()" ${canPropose?'':'disabled'}>${st.inReview?'Add to the pending edit':'Propose an edit'}</button>
+      ${st.queued?'<span class="who" style="margin-left:10px">Locked while in the update queue.</span>':canPropose?'':'<span class="who" style="margin-left:10px">Sign in as White Council to propose changes.</span>'}</div>`;
+  S.curArticle=a;S.curState=st;S.curEditable=d.editableBody!=null?d.editableBody:a.body;
+}
+function stamps(t){
+  if(!t)return'';
+  const bits=[];
+  if(t.review_requested_at)bits.push(`<span><b>Requested</b> ${fmtTs(t.review_requested_at)}</span>`);
+  if(t.approved_at)bits.push(`<span><b>Approved</b> ${fmtTs(t.approved_at)}</span>`);
+  if(t.applied_at)bits.push(`<span><b>Applied</b> ${fmtTs(t.applied_at)}</span>`);
+  return bits.length?`<div class="stamps">${bits.join('')}</div>`:'';
+}
+function fmtTs(s){if(!s)return'—';return new Date(s*1000).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}
+const PLABEL={submitted:'submitted',held:'held',approved:'in queue',applied:'applied',superseded:'merged',declined:'declined'};
+function plabel(s){return PLABEL[s]||s}
+// A bordered read-only reference box (no id, so it never clashes with the copyable clean pre).
+function refBox(label,text){
+  return `<div class="clean"><div class="ch"><span class="lbl">${esc(label)}</span></div><pre>${esc(text||'—')}</pre></div>`;
+}
+function startPropose(){
+  const a=S.curArticle;S.proposing=true;
+  const merging=S.curState&&S.curState.inReview;
+  const base=S.curEditable!=null?S.curEditable:a.body;
+  $('detail').innerHTML=`
+    <div class="kicker">${merging?'Add to the pending edit':'Propose an edit'} · help/${a.slug}</div>
+    <h2 class="title">${esc(a.title)}</h2>
+    <div class="slug">${merging?'This file is already in review — you are editing the pending version. Your changes merge into one proposal for the approver.':'Your edit is recorded against your Discord name and sent to an approver.'}</div>
+    <div class="split2">
+      <div class="editcol">
+        <div class="field"><label>Kind of change</label>
+          <select id="kind"><option value="correction">Correction — a factual fix</option>
+            <option value="propagation">Propagation — apply an announced change</option>
+            <option value="clarity">Clarity — clearer or fuller wording</option>
+            <option value="keyword">Keyword — add a searchable term</option></select></div>
+        <div class="field"><label>Why (rationale, required)</label><textarea class="rat" id="rat" placeholder="What's wrong and what you're fixing…"></textarea></div>
+        <div class="field"><label>Help text${merging?' (the pending in-review version)':''}</label><textarea id="body" spellcheck="false">${esc(base)}</textarea></div>
+        <div class="field"><label>Note for review (optional — shown to the approver, excluded from the copy output)</label><textarea class="rat" id="rev" placeholder="Anything the approver should confirm before applying…"></textarea></div>
+        <div class="sec"><button class="btn pri" onclick="submitPropose()">Submit proposal</button>
+          <button class="btn" onclick="openArticle('${a.slug}')" style="margin-left:8px">Cancel</button></div>
+      </div>
+      <div class="refcol"><div class="refpane">
+        <div class="paneh orig">Original help page · for reference</div>
+        ${refBox('help/'+a.slug+' (live)',a.body)}
+      </div></div>
+    </div>`;
+}
+async function submitPropose(){
+  const a=S.curArticle;
+  const body={slug:a.slug,kind:$('kind').value,rationale:$('rat').value,body_after:$('body').value,note_review:$('rev').value};
+  if(!body.rationale.trim()){toast('A rationale is required');return}
+  try{const r=await api('/api/proposals',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    toast(r.merged?'Merged into the pending proposal':'Proposal submitted');setMode('review');setTimeout(()=>openProposal(r.id),150);
+  }catch(e){toast(e.message)}
+}
+
+// ---------- review ----------
+async function loadProposals(){
+  const d=await api('/api/proposals');S.proposals=d.proposals;drawQueue();
+  if(!S.curProp)$('detail').innerHTML='<div class="empty">Select a proposal to review.</div>';
+}
+function drawQueue(){
+  const el=$('list');
+  const order=['submitted','held','approved','applied','superseded'];
+  const names={submitted:'Awaiting decision',held:'Held for discussion',approved:'Approved · in queue',applied:'Approved · applied',superseded:'Merged into a newer edit'};
+  let html=`<div class="search"><input placeholder="—" disabled style="opacity:.4"><div class="count">${S.proposals.length} proposals</div></div>`;
+  for(const st of order){
+    const mine=S.proposals.filter(p=>p.status===st);if(!mine.length)continue;
+    html+=`<div class="qgroup">${names[st]} · ${mine.length}</div>`+mine.map(p=>`<div class="item ${p.id===S.curProp?'on':''}" onclick="openProposal(${p.id})">
+      <div class="t">${p.slug}</div><div class="m"><span>${p.kind}</span> · <span>${esc(p.author_name)}</span> <span class="pill s-${p.status}">${plabel(p.status)}</span></div></div>`).join('');
+  }
+  el.innerHTML=html;
+  if(!S.proposals.length)el.innerHTML+='<div class="empty">No proposals yet.</div>';
+}
+// ---------- rejected ----------
+async function loadRejected(){
+  const d=await api('/api/proposals?status=declined');S.proposals=d.proposals;drawRejected();
+  if(!S.curProp)$('detail').innerHTML='<div class="empty">Rejected proposals. Select one to see the reason and the original edit.</div>';
+}
+function drawRejected(){
+  const el=$('list');
+  let html=`<div class="search"><input placeholder="—" disabled style="opacity:.4"><div class="count">${S.proposals.length} rejected</div></div>`;
+  if(!S.proposals.length){el.innerHTML=html+'<div class="empty">Nothing rejected yet.</div>';return}
+  html+=S.proposals.map(p=>`<div class="item ${p.id===S.curProp?'on':''}" onclick="openProposal(${p.id})">
+    <div class="t">${p.slug}</div>
+    <div class="m"><span>${p.kind}</span> · <span>${esc(p.author_name)}</span> <span class="pill s-declined">rejected</span></div>
+    ${p.decline_note?`<div class="rjn">"${esc(p.decline_note)}"</div>`:'<div class="rjn muted">no reason given</div>'}
+    <div class="m">${p.decline_by?'— '+esc(p.decline_by):''}${p.decline_at?' · '+fmtTs(p.decline_at):''}</div></div>`).join('');
+  el.innerHTML=html;
+}
+function lineDiff(before,after){
+  const A=before.split('\n'),B=after.split('\n');
+  // shortest-edit-ish: mark common prefix/suffix, everything between as -/+.
+  let s=0;while(s<A.length&&s<B.length&&A[s]===B[s])s++;
+  let e=0;while(e<A.length-s&&e<B.length-s&&A[A.length-1-e]===B[B.length-1-e])e++;
+  const out=[];
+  for(let i=Math.max(0,s-2);i<s;i++)out.push(['ctx','',A[i]]);
+  for(let i=s;i<A.length-e;i++)out.push(['was','-',A[i]]);
+  for(let i=s;i<B.length-e;i++)out.push(['now','+',B[i]]);
+  for(let i=A.length-e;i<Math.min(A.length,A.length-e+2);i++)out.push(['ctx','',A[i]]);
+  return out.length?out:[['ctx','','(no line-level change)']];
+}
+async function openProposal(id){
+  S.curProp=id;S.mode==='rejected'?drawRejected():drawQueue();
+  const d=await api('/api/proposals/'+id);const p=d.proposal;
+  const checks=d.checks.map(c=>{const ic=c.severity==='ok'?'✓':c.severity==='error'?'✕':'!';return `<div class="chk ${c.severity}"><span class="ic">${ic}</span><span>${esc(c.detail)}</span></div>`}).join('')||'<div class="chk ok"><span class="ic">✓</span><span>No checks recorded</span></div>';
+  const diff=lineDiff(p.body_before,p.body_after).map(([k,g,t])=>`<div class="dl ${k}"><span class="g">${g}</span><span class="t">${esc(t)||' '}</span></div>`).join('');
+  const decs=d.decisions.map(x=>`<div class="chk ok"><span class="ic">·</span><span><b>${esc(x.actor_name)}</b> ${x.verdict}${x.note?' — '+esc(x.note):''}</span></div>`).join('');
+  const isApprover=S.me&&S.me.approver;
+  const canDecide=isApprover&&['submitted','held'].includes(p.status);
+  const rev=p.note_review?`<div class="rev-note">NOTE FOR REVIEW: ${esc(p.note_review)}</div>`:'';
+  let bar;
+  if(canDecide){
+    bar=`<div class="decide"><span class="who2">Deciding as <b>${esc(S.me.name)}</b>. Recorded against your name.</span>
+        <button class="btn" onclick="decide(${id},'hold')">Hold</button>
+        <button class="btn" onclick="decide(${id},'decline')">Decline</button>
+        <button class="btn pri" onclick="decide(${id},'approve')">Approve → queue</button></div>`;
+  }else if(p.status==='submitted'||p.status==='held'){
+    bar=`<div class="decide"><span class="who2">${S.me?'Only an approver can decide.':'Sign in as an approver to decide.'}</span></div>`;
+  }else if(p.status==='approved'){
+    // In the queue: approved, waiting to go live. Approver can mark it applied by hand;
+    // otherwise a scan will do it automatically once the change shows up in-game.
+    bar=`<div class="decide"><span class="who2"><b>Approved and in the queue.</b> Copy the clean version above and apply it in-game. It flips to <b>applied</b> automatically on the next scan.</span>
+        ${isApprover?`<button class="lnk" onclick="decide(${id},'reopen')">Reopen</button>
+        <button class="btn pri" onclick="decide(${id},'apply')">Mark applied</button>`:''}</div>`;
+  }else if(p.status==='applied'){
+    bar=`<div class="decide"><span class="who2"><b>Applied.</b> This edit is live in the game's help text.</span></div>`;
+  }else if(p.status==='superseded'){
+    bar=`<div class="decide"><span class="who2">Merged into a newer edit${p.superseded_by?` (#${p.superseded_by})`:''} for approval.</span></div>`;
+  }else{
+    bar=`<div class="decide"><span class="who2">Marked <b>${p.status}</b>.</span>
+         ${isApprover?`<button class="lnk" onclick="decide(${id},'reopen')">Reopen</button>`:''}</div>`;
+  }
+  $('detail').innerHTML=`
+    <div class="kicker">${p.kind} · help/${p.slug}</div>
+    <h2 class="title">${d.article?esc(d.article.title):p.slug}</h2>
+    <div class="slug">Proposed by ${esc(p.author_name)} · <span class="pill s-${p.status}">${plabel(p.status)}</span></div>
+    <div class="sec"><h3>Rationale</h3><div class="note">${esc(p.rationale)}</div>${rev}</div>
+    <div class="sec"><h3>Automated checks</h3><div class="checks">${checks}</div></div>
+    <div class="split2">
+      <div>
+        <div class="paneh prop">Proposed · ready to apply</div>
+        <div class="clean"><div class="ch"><span class="lbl">help/${p.slug}</span><button class="copy" onclick="cp(this)">Copy</button></div>
+          <pre id="clean">${esc(p.body_after)}</pre></div>
+      </div>
+      <div>
+        <div class="paneh orig">Original help page ${d.article?'· live':'· as proposed against'}</div>
+        <div class="refpane">${refBox('help/'+p.slug,d.article?d.article.body:p.body_before)}</div>
+      </div>
+    </div>
+    <div class="sec"><h3>Line-by-line change</h3><div class="diff">${diff}</div></div>
+    ${decs?`<div class="sec"><h3>History</h3><div class="checks">${decs}</div></div>`:''}
+    ${bar}`;
+}
+async function decide(id,verdict){
+  let note=null;
+  if(verdict==='decline'||verdict==='hold')note=prompt(verdict==='decline'?'Reason for declining (optional):':'Note for discussion (optional):')||'';
+  try{await api('/api/proposals/'+id+'/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({verdict,note})});
+    toast('Recorded');await loadProposals();openProposal(id);
+  }catch(e){toast(e.message)}
+}
+function cp(b){navigator.clipboard.writeText($('clean').innerText).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy',1400)})}
+
+boot();
+</script>
+</body>
+</html>

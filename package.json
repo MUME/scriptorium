@@ -1,0 +1,19 @@
+{
+  "name": "scriptorium",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "crawl": "node scripts/crawl.mjs",
+    "seed": "node scripts/seed.mjs",
+    "migrate:remote": "wrangler d1 migrations apply scriptorium --remote",
+    "migrate:local": "wrangler d1 migrations apply scriptorium --local",
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240909.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^4.0.0"
+  }
+}
